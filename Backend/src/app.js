@@ -16,12 +16,17 @@ import { authorize } from "./common/core/role.middleware.js";
 import { statsRoutes } from "./modules/stats/routes/stats.route.js";
 import invoiceRouter from "./modules/invoices/routes/invoice.routes.js";
 import paymentRouter from "./modules/payments/routes/payment.routes.js";
+import { encryptPassword } from "./common/utils/password.util.js";
 
 const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      /^http:\/\/localhost:\d+$/,
+      "http://localhost",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
@@ -29,6 +34,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.get("/", async (req, res) => {
+  const genratePassword = await encryptPassword("admin");
+  console.log(genratePassword);
   res.json({
     message: "Welcome to the API",
   });
